@@ -1,0 +1,1357 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -2784,
+        -560
+      ],
+      "id": "9d4d8550-c786-422e-8388-6e3e2a2bc3f5",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "functionCode": "// cluster by theme, extract metaphors, output JSON"
+      },
+      "name": "Cluster/Extract",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        2272,
+        -448
+      ],
+      "id": "935f929e-41fe-495e-8389-1daba4a6627e",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/all/top.json?limit=20",
+        "options": {}
+      },
+      "name": "Reddit Fetch",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -2896,
+        96
+      ],
+      "id": "80cbc097-7eb5-4613-b6b8-0bd9a1c4decc",
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/commentThreads",
+        "options": {}
+      },
+      "name": "YouTube Comments Fetch",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -2896,
+        -288
+      ],
+      "id": "5a94217a-2035-4600-bb92-332a97a2bf63",
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "model": "o3-deep-research",
+        "prompt": "You are the Augmentor in a predictive linguistics workflow inspired by Clif High. Your job is to cross-validate, enrich, and expand upon the signals detected in the most recent “Grok” (X platform) scan. Focus on the same topic and timeframe, but target platforms beyond X, such as Reddit, major news site comment sections, and public web forums.\n\nInstructions:\nScan Reddit (topical subreddits), news site comments, and open public forums for posts, comments, and replies about [TOPIC] in the last [TIMEFRAME] (e.g., 6, 12, 24, 48 hours).\n\nCluster and summarize:\n\nNotable metaphors, emergent archetypes, emotional tones, and temporal/future-facing language.\n\nPhrases or memes that feel prescient, predictive, or out of alignment with the current news context.\n\nTrack volume and sentiment:\n\nNote spikes, drops, or shifts in discussion intensity.\n\nSummarize overall sentiment (fear, hope, anger, resignation, etc.), highlighting any emotional archetypes that differ from the Grok/X scan.\n\nFlag novelty:\n\nIdentify new or rare metaphors/archetypes, including any unusual or original phrases not found in the mainstream.\n\nIf a phrase or meme appears to be “born” on these platforms (excluding X), timestamp and highlight it for tracking.\n\nStructured Output:\n\nSummary Table: List clusters by platform, archetype, and frequency.\n\nPrescient Signals: Bullet-point notable metaphors, emotional language, or new archetypes.\n\nNovelty Section: Highlight and timestamp any meme or metaphor birth points.\n\nImplications/Speculation: Offer a brief, mystical-yet-analytical outlook (in the Clif High style) based on the observed linguistic patterns.\n\nCite sources wherever possible (thread links, comment IDs, or descriptive references).\n\nOutput Example:\nSummary Table\nPlatform\tArchetype/Metaphor\tExample Phrases\tFrequency\tSentiment\nReddit\tBreakthrough\t“Finally turning point”\t12\tHope\nNews\tCollapse\t“It’s all unraveling”\t7\tFear\nForums\tReset, Awakening\t“Clean slate,” “reset”\t5\tMixed\n\nPrescient Signals\nSurge in “breakthrough” and “reset” language on Reddit (“new beginning,” “ready to rebuild”).\n\nNews comments spike in “unraveling” and “on the edge” metaphors.\n\nForums birth phrase: “synthetic sunrise” (first appeared 10:32 AM, July 17).\n\nNovelty Section\nThe phrase “Synthetic sunrise” originated in forums, now appearing on Reddit.\n\nNew meme: “Ponzi reboot” in news comments (unseen on X so far).\n\nImplications/Speculation\n“While mainstream comments echo collapse, a current of breakthrough and ‘synthetic sunrise’ metaphors emerges off-X, hinting at hidden optimism beneath the fear—a classic sign of collective tension and imminent shift.”\n\nSources\nReddit: r/news, r/conspiracy (threads: [URL1], [URL2])\n\nNews: CNN.com comments (article: [link])\n\nForums: [forum link]\n\n",
+        "options": {},
+        "requestOptions": {}
+      },
+      "name": "Augmentor (ChatGPT)",
+      "type": "n8n-nodes-base.openAi",
+      "position": [
+        -144,
+        -624
+      ],
+      "id": "32f0b4d9-878c-48fd-bbe6-d49356492c29",
+      "typeVersion": 1.1,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "uOBR1l1cdllKlArh",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "functionCode": "// merge Grok and Augmentor outputs, create Markdown/JSON summary"
+      },
+      "name": "Aggregate/Report",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        2448,
+        -176
+      ],
+      "id": "48128fbd-5c72-4a4b-a640-0335b5dd057e",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Output",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2624,
+        128
+      ],
+      "id": "344354ac-938f-48d0-98c8-4e2c9c4f5d20",
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2384,
+        -672
+      ],
+      "id": "3c913710-85a7-4d0a-92b9-87af079de842",
+      "name": "When chat message received",
+      "webhookId": "3f52565a-bc58-44c3-823e-98149d804b51"
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -1472,
+        -480
+      ],
+      "id": "73755d59-b53f-4f06-ad19-6849b410d12c",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatXAiGrok",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        32
+      ],
+      "id": "4b46aa87-26f9-4f95-841e-164c459f7d4e",
+      "name": "xAI Grok Chat Model",
+      "credentials": {
+        "xAiApi": {
+          "id": "7qRiDRIlKZ1RZ28G",
+          "name": "xAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        736,
+        -464
+      ],
+      "id": "3527db78-bd5f-469e-98d0-294b3d6118b8",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1.1,
+      "position": [
+        -192,
+        -384
+      ],
+      "id": "944fca44-d86f-4ffe-bf78-e5a39f18e2e8",
+      "name": "Sentiment Analysis"
+    },
+    {
+      "parameters": {
+        "categories": {
+          "categories": [
+            {
+              "category": "Economic"
+            },
+            {
+              "category": "Geopolitical"
+            },
+            {
+              "category": "Disaster"
+            }
+          ]
+        },
+        "options": {
+          "multiClass": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -704,
+        -624
+      ],
+      "id": "3aafe072-9783-43e5-a8ac-e4d5529d9b99",
+      "name": "Text Classifier",
+      "alwaysOutputData": true,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        1232,
+        -288
+      ],
+      "id": "dc71f606-6fd7-4a6e-85da-0b517d2cb494",
+      "name": "Question and Answer Chain"
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        -1808,
+        -160
+      ],
+      "id": "a48e023c-339a-4f62-8c01-8b6108d2232d",
+      "name": "Create Tweet"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.reddit",
+      "typeVersion": 1,
+      "position": [
+        -1824,
+        304
+      ],
+      "id": "d814ccb7-4f84-4b61-8e76-29d1da8039eb",
+      "name": "Search for a post"
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        -1808,
+        48
+      ],
+      "id": "7c383e9b-86a4-43f1-8d5e-588af72d3a43",
+      "name": "Get many channels"
+    },
+    {
+      "parameters": {
+        "model": "deepseek-14b-q8:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -272
+      ],
+      "id": "04c671d5-f1b1-44fd-b0be-276f61ea6dff",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mPxeDnqbsZWsRQeD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://search.stage0.lil-apollo.lan/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -1104,
+        -16
+      ],
+      "id": "5038f3f9-9298-4408-8706-fb3ab56a4239",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -1072,
+        -400
+      ],
+      "id": "3dd2288d-2149-438e-a309-c4d625b68ccc",
+      "name": "Information Extractor1"
+    },
+    {
+      "parameters": {
+        "model": "deepseek-14b-q8:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        -160
+      ],
+      "id": "b38373f8-2174-45ef-822b-7a2be970f0fe",
+      "name": "Ollama Chat Model1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mPxeDnqbsZWsRQeD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "deepseek-14b-q8:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        1152
+      ],
+      "id": "1b44ebf7-7c53-4d49-92de-2daf9ea783f2",
+      "name": "Ollama Chat Model2",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mPxeDnqbsZWsRQeD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "deepseek-14b-q8:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        -352
+      ],
+      "id": "b7ac654a-a570-49f9-99ca-a3c5f7bfc158",
+      "name": "Ollama Chat Model3",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mPxeDnqbsZWsRQeD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1.1,
+      "position": [
+        -176,
+        32
+      ],
+      "id": "cb568c31-8d0d-46ee-837b-f31fddee7a86",
+      "name": "Sentiment Analysis1"
+    },
+    {
+      "parameters": {
+        "model": "deepseek-14b-q8:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        1152
+      ],
+      "id": "6e359624-964c-4b37-a25e-ef8872b5a4c3",
+      "name": "Ollama Chat Model4",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mPxeDnqbsZWsRQeD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1.1,
+      "position": [
+        -192,
+        624
+      ],
+      "id": "d458f745-aa7f-48dc-9f6c-8077ceed4877",
+      "name": "Sentiment Analysis2"
+    },
+    {
+      "parameters": {
+        "model": "deepseek-14b-q8:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        0,
+        1152
+      ],
+      "id": "119d1fda-a9b5-4b61-bedb-cc1ba836b001",
+      "name": "Ollama Chat Model5",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mPxeDnqbsZWsRQeD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "o3-deep-research",
+        "prompt": "You are the Augmentor in a predictive linguistics workflow inspired by Clif High. Your job is to cross-validate, enrich, and expand upon the signals detected in the most recent “Grok” (X platform) scan. Focus on the same topic and timeframe, but target platforms beyond X, such as Reddit, major news site comment sections, and public web forums.\n\nInstructions:\nScan Reddit (topical subreddits), news site comments, and open public forums for posts, comments, and replies about [TOPIC] in the last [TIMEFRAME] (e.g., 6, 12, 24, 48 hours).\n\nCluster and summarize:\n\nNotable metaphors, emergent archetypes, emotional tones, and temporal/future-facing language.\n\nPhrases or memes that feel prescient, predictive, or out of alignment with the current news context.\n\nTrack volume and sentiment:\n\nNote spikes, drops, or shifts in discussion intensity.\n\nSummarize overall sentiment (fear, hope, anger, resignation, etc.), highlighting any emotional archetypes that differ from the Grok/X scan.\n\nFlag novelty:\n\nIdentify new or rare metaphors/archetypes, including any unusual or original phrases not found in the mainstream.\n\nIf a phrase or meme appears to be “born” on these platforms (excluding X), timestamp and highlight it for tracking.\n\nStructured Output:\n\nSummary Table: List clusters by platform, archetype, and frequency.\n\nPrescient Signals: Bullet-point notable metaphors, emotional language, or new archetypes.\n\nNovelty Section: Highlight and timestamp any meme or metaphor birth points.\n\nImplications/Speculation: Offer a brief, mystical-yet-analytical outlook (in the Clif High style) based on the observed linguistic patterns.\n\nCite sources wherever possible (thread links, comment IDs, or descriptive references).\n\nOutput Example:\nSummary Table\nPlatform\tArchetype/Metaphor\tExample Phrases\tFrequency\tSentiment\nReddit\tBreakthrough\t“Finally turning point”\t12\tHope\nNews\tCollapse\t“It’s all unraveling”\t7\tFear\nForums\tReset, Awakening\t“Clean slate,” “reset”\t5\tMixed\n\nPrescient Signals\nSurge in “breakthrough” and “reset” language on Reddit (“new beginning,” “ready to rebuild”).\n\nNews comments spike in “unraveling” and “on the edge” metaphors.\n\nForums birth phrase: “synthetic sunrise” (first appeared 10:32 AM, July 17).\n\nNovelty Section\nThe phrase “Synthetic sunrise” originated in forums, now appearing on Reddit.\n\nNew meme: “Ponzi reboot” in news comments (unseen on X so far).\n\nImplications/Speculation\n“While mainstream comments echo collapse, a current of breakthrough and ‘synthetic sunrise’ metaphors emerges off-X, hinting at hidden optimism beneath the fear—a classic sign of collective tension and imminent shift.”\n\nSources\nReddit: r/news, r/conspiracy (threads: [URL1], [URL2])\n\nNews: CNN.com comments (article: [link])\n\nForums: [forum link]\n\n",
+        "options": {},
+        "requestOptions": {}
+      },
+      "name": "Augmentor (ChatGPT)1",
+      "type": "n8n-nodes-base.openAi",
+      "position": [
+        416,
+        -192
+      ],
+      "id": "a91952ce-28aa-451a-8f85-843b10cba4cc",
+      "typeVersion": 1.1,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "uOBR1l1cdllKlArh",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "o3-deep-research",
+        "prompt": "You are the Augmentor in a predictive linguistics workflow inspired by Clif High. Your job is to cross-validate, enrich, and expand upon the signals detected in the most recent “Grok” (X platform) scan. Focus on the same topic and timeframe, but target platforms beyond X, such as Reddit, major news site comment sections, and public web forums.\n\nInstructions:\nScan Reddit (topical subreddits), news site comments, and open public forums for posts, comments, and replies about [TOPIC] in the last [TIMEFRAME] (e.g., 6, 12, 24, 48 hours).\n\nCluster and summarize:\n\nNotable metaphors, emergent archetypes, emotional tones, and temporal/future-facing language.\n\nPhrases or memes that feel prescient, predictive, or out of alignment with the current news context.\n\nTrack volume and sentiment:\n\nNote spikes, drops, or shifts in discussion intensity.\n\nSummarize overall sentiment (fear, hope, anger, resignation, etc.), highlighting any emotional archetypes that differ from the Grok/X scan.\n\nFlag novelty:\n\nIdentify new or rare metaphors/archetypes, including any unusual or original phrases not found in the mainstream.\n\nIf a phrase or meme appears to be “born” on these platforms (excluding X), timestamp and highlight it for tracking.\n\nStructured Output:\n\nSummary Table: List clusters by platform, archetype, and frequency.\n\nPrescient Signals: Bullet-point notable metaphors, emotional language, or new archetypes.\n\nNovelty Section: Highlight and timestamp any meme or metaphor birth points.\n\nImplications/Speculation: Offer a brief, mystical-yet-analytical outlook (in the Clif High style) based on the observed linguistic patterns.\n\nCite sources wherever possible (thread links, comment IDs, or descriptive references).\n\nOutput Example:\nSummary Table\nPlatform\tArchetype/Metaphor\tExample Phrases\tFrequency\tSentiment\nReddit\tBreakthrough\t“Finally turning point”\t12\tHope\nNews\tCollapse\t“It’s all unraveling”\t7\tFear\nForums\tReset, Awakening\t“Clean slate,” “reset”\t5\tMixed\n\nPrescient Signals\nSurge in “breakthrough” and “reset” language on Reddit (“new beginning,” “ready to rebuild”).\n\nNews comments spike in “unraveling” and “on the edge” metaphors.\n\nForums birth phrase: “synthetic sunrise” (first appeared 10:32 AM, July 17).\n\nNovelty Section\nThe phrase “Synthetic sunrise” originated in forums, now appearing on Reddit.\n\nNew meme: “Ponzi reboot” in news comments (unseen on X so far).\n\nImplications/Speculation\n“While mainstream comments echo collapse, a current of breakthrough and ‘synthetic sunrise’ metaphors emerges off-X, hinting at hidden optimism beneath the fear—a classic sign of collective tension and imminent shift.”\n\nSources\nReddit: r/news, r/conspiracy (threads: [URL1], [URL2])\n\nNews: CNN.com comments (article: [link])\n\nForums: [forum link]\n\n",
+        "options": {},
+        "requestOptions": {}
+      },
+      "name": "Augmentor (ChatGPT)2",
+      "type": "n8n-nodes-base.openAi",
+      "position": [
+        128,
+        -560
+      ],
+      "id": "bf0b3350-01ec-4c60-82e0-1c08718ddaff",
+      "typeVersion": 1.1,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "uOBR1l1cdllKlArh",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "o3-deep-research",
+        "prompt": "You are the Augmentor in a predictive linguistics workflow inspired by Clif High. Your job is to cross-validate, enrich, and expand upon the signals detected in the most recent “Grok” (X platform) scan. Focus on the same topic and timeframe, but target platforms beyond X, such as Reddit, major news site comment sections, and public web forums.\n\nInstructions:\nScan Reddit (topical subreddits), news site comments, and open public forums for posts, comments, and replies about [TOPIC] in the last [TIMEFRAME] (e.g., 6, 12, 24, 48 hours).\n\nCluster and summarize:\n\nNotable metaphors, emergent archetypes, emotional tones, and temporal/future-facing language.\n\nPhrases or memes that feel prescient, predictive, or out of alignment with the current news context.\n\nTrack volume and sentiment:\n\nNote spikes, drops, or shifts in discussion intensity.\n\nSummarize overall sentiment (fear, hope, anger, resignation, etc.), highlighting any emotional archetypes that differ from the Grok/X scan.\n\nFlag novelty:\n\nIdentify new or rare metaphors/archetypes, including any unusual or original phrases not found in the mainstream.\n\nIf a phrase or meme appears to be “born” on these platforms (excluding X), timestamp and highlight it for tracking.\n\nStructured Output:\n\nSummary Table: List clusters by platform, archetype, and frequency.\n\nPrescient Signals: Bullet-point notable metaphors, emotional language, or new archetypes.\n\nNovelty Section: Highlight and timestamp any meme or metaphor birth points.\n\nImplications/Speculation: Offer a brief, mystical-yet-analytical outlook (in the Clif High style) based on the observed linguistic patterns.\n\nCite sources wherever possible (thread links, comment IDs, or descriptive references).\n\nOutput Example:\nSummary Table\nPlatform\tArchetype/Metaphor\tExample Phrases\tFrequency\tSentiment\nReddit\tBreakthrough\t“Finally turning point”\t12\tHope\nNews\tCollapse\t“It’s all unraveling”\t7\tFear\nForums\tReset, Awakening\t“Clean slate,” “reset”\t5\tMixed\n\nPrescient Signals\nSurge in “breakthrough” and “reset” language on Reddit (“new beginning,” “ready to rebuild”).\n\nNews comments spike in “unraveling” and “on the edge” metaphors.\n\nForums birth phrase: “synthetic sunrise” (first appeared 10:32 AM, July 17).\n\nNovelty Section\nThe phrase “Synthetic sunrise” originated in forums, now appearing on Reddit.\n\nNew meme: “Ponzi reboot” in news comments (unseen on X so far).\n\nImplications/Speculation\n“While mainstream comments echo collapse, a current of breakthrough and ‘synthetic sunrise’ metaphors emerges off-X, hinting at hidden optimism beneath the fear—a classic sign of collective tension and imminent shift.”\n\nSources\nReddit: r/news, r/conspiracy (threads: [URL1], [URL2])\n\nNews: CNN.com comments (article: [link])\n\nForums: [forum link]\n\n",
+        "options": {},
+        "requestOptions": {}
+      },
+      "name": "Augmentor (ChatGPT)3",
+      "type": "n8n-nodes-base.openAi",
+      "position": [
+        304,
+        -416
+      ],
+      "id": "f305622c-e884-4551-9c86-109a7f338558",
+      "typeVersion": 1.1,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "uOBR1l1cdllKlArh",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "deepseek-14b-q8:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        1232,
+        -48
+      ],
+      "id": "36f727ab-a90a-44f2-8f82-c93def63c63b",
+      "name": "Ollama Chat Model6",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mPxeDnqbsZWsRQeD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        64
+      ],
+      "id": "10d0ccbd-2656-49c6-90e8-421ba0e19751",
+      "name": "Information Extractor2"
+    },
+    {
+      "parameters": {
+        "model": "o3-deep-research",
+        "prompt": "You are the Augmentor in a predictive linguistics workflow inspired by Clif High. Your job is to cross-validate, enrich, and expand upon the signals detected in the most recent “Grok” (X platform) scan. Focus on the same topic and timeframe, but target platforms beyond X, such as Reddit, major news site comment sections, and public web forums.\n\nInstructions:\nScan Reddit (topical subreddits), news site comments, and open public forums for posts, comments, and replies about [TOPIC] in the last [TIMEFRAME] (e.g., 6, 12, 24, 48 hours).\n\nCluster and summarize:\n\nNotable metaphors, emergent archetypes, emotional tones, and temporal/future-facing language.\n\nPhrases or memes that feel prescient, predictive, or out of alignment with the current news context.\n\nTrack volume and sentiment:\n\nNote spikes, drops, or shifts in discussion intensity.\n\nSummarize overall sentiment (fear, hope, anger, resignation, etc.), highlighting any emotional archetypes that differ from the Grok/X scan.\n\nFlag novelty:\n\nIdentify new or rare metaphors/archetypes, including any unusual or original phrases not found in the mainstream.\n\nIf a phrase or meme appears to be “born” on these platforms (excluding X), timestamp and highlight it for tracking.\n\nStructured Output:\n\nSummary Table: List clusters by platform, archetype, and frequency.\n\nPrescient Signals: Bullet-point notable metaphors, emotional language, or new archetypes.\n\nNovelty Section: Highlight and timestamp any meme or metaphor birth points.\n\nImplications/Speculation: Offer a brief, mystical-yet-analytical outlook (in the Clif High style) based on the observed linguistic patterns.\n\nCite sources wherever possible (thread links, comment IDs, or descriptive references).\n\nOutput Example:\nSummary Table\nPlatform\tArchetype/Metaphor\tExample Phrases\tFrequency\tSentiment\nReddit\tBreakthrough\t“Finally turning point”\t12\tHope\nNews\tCollapse\t“It’s all unraveling”\t7\tFear\nForums\tReset, Awakening\t“Clean slate,” “reset”\t5\tMixed\n\nPrescient Signals\nSurge in “breakthrough” and “reset” language on Reddit (“new beginning,” “ready to rebuild”).\n\nNews comments spike in “unraveling” and “on the edge” metaphors.\n\nForums birth phrase: “synthetic sunrise” (first appeared 10:32 AM, July 17).\n\nNovelty Section\nThe phrase “Synthetic sunrise” originated in forums, now appearing on Reddit.\n\nNew meme: “Ponzi reboot” in news comments (unseen on X so far).\n\nImplications/Speculation\n“While mainstream comments echo collapse, a current of breakthrough and ‘synthetic sunrise’ metaphors emerges off-X, hinting at hidden optimism beneath the fear—a classic sign of collective tension and imminent shift.”\n\nSources\nReddit: r/news, r/conspiracy (threads: [URL1], [URL2])\n\nNews: CNN.com comments (article: [link])\n\nForums: [forum link]\n\n",
+        "options": {},
+        "requestOptions": {}
+      },
+      "name": "Augmentor (ChatGPT)4",
+      "type": "n8n-nodes-base.openAi",
+      "position": [
+        432,
+        16
+      ],
+      "id": "81952144-4270-454d-92cf-94d8ff819823",
+      "typeVersion": 1.1,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "uOBR1l1cdllKlArh",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "o3-deep-research",
+        "prompt": "You are the Augmentor in a predictive linguistics workflow inspired by Clif High. Your job is to cross-validate, enrich, and expand upon the signals detected in the most recent “Grok” (X platform) scan. Focus on the same topic and timeframe, but target platforms beyond X, such as Reddit, major news site comment sections, and public web forums.\n\nInstructions:\nScan Reddit (topical subreddits), news site comments, and open public forums for posts, comments, and replies about [TOPIC] in the last [TIMEFRAME] (e.g., 6, 12, 24, 48 hours).\n\nCluster and summarize:\n\nNotable metaphors, emergent archetypes, emotional tones, and temporal/future-facing language.\n\nPhrases or memes that feel prescient, predictive, or out of alignment with the current news context.\n\nTrack volume and sentiment:\n\nNote spikes, drops, or shifts in discussion intensity.\n\nSummarize overall sentiment (fear, hope, anger, resignation, etc.), highlighting any emotional archetypes that differ from the Grok/X scan.\n\nFlag novelty:\n\nIdentify new or rare metaphors/archetypes, including any unusual or original phrases not found in the mainstream.\n\nIf a phrase or meme appears to be “born” on these platforms (excluding X), timestamp and highlight it for tracking.\n\nStructured Output:\n\nSummary Table: List clusters by platform, archetype, and frequency.\n\nPrescient Signals: Bullet-point notable metaphors, emotional language, or new archetypes.\n\nNovelty Section: Highlight and timestamp any meme or metaphor birth points.\n\nImplications/Speculation: Offer a brief, mystical-yet-analytical outlook (in the Clif High style) based on the observed linguistic patterns.\n\nCite sources wherever possible (thread links, comment IDs, or descriptive references).\n\nOutput Example:\nSummary Table\nPlatform\tArchetype/Metaphor\tExample Phrases\tFrequency\tSentiment\nReddit\tBreakthrough\t“Finally turning point”\t12\tHope\nNews\tCollapse\t“It’s all unraveling”\t7\tFear\nForums\tReset, Awakening\t“Clean slate,” “reset”\t5\tMixed\n\nPrescient Signals\nSurge in “breakthrough” and “reset” language on Reddit (“new beginning,” “ready to rebuild”).\n\nNews comments spike in “unraveling” and “on the edge” metaphors.\n\nForums birth phrase: “synthetic sunrise” (first appeared 10:32 AM, July 17).\n\nNovelty Section\nThe phrase “Synthetic sunrise” originated in forums, now appearing on Reddit.\n\nNew meme: “Ponzi reboot” in news comments (unseen on X so far).\n\nImplications/Speculation\n“While mainstream comments echo collapse, a current of breakthrough and ‘synthetic sunrise’ metaphors emerges off-X, hinting at hidden optimism beneath the fear—a classic sign of collective tension and imminent shift.”\n\nSources\nReddit: r/news, r/conspiracy (threads: [URL1], [URL2])\n\nNews: CNN.com comments (article: [link])\n\nForums: [forum link]\n\n",
+        "options": {},
+        "requestOptions": {}
+      },
+      "name": "Augmentor (ChatGPT)5",
+      "type": "n8n-nodes-base.openAi",
+      "position": [
+        416,
+        224
+      ],
+      "id": "00c9e889-5cf7-4275-b99c-da39bda241db",
+      "typeVersion": 1.1,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "uOBR1l1cdllKlArh",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "deepseek-14b-q8:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        720,
+        304
+      ],
+      "id": "ca155a81-778d-4905-b66b-cfe0f3d7e331",
+      "name": "Ollama Chat Model7",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mPxeDnqbsZWsRQeD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "o3-deep-research",
+        "prompt": "You are the Augmentor in a predictive linguistics workflow inspired by Clif High. Your job is to cross-validate, enrich, and expand upon the signals detected in the most recent “Grok” (X platform) scan. Focus on the same topic and timeframe, but target platforms beyond X, such as Reddit, major news site comment sections, and public web forums.\n\nInstructions:\nScan Reddit (topical subreddits), news site comments, and open public forums for posts, comments, and replies about [TOPIC] in the last [TIMEFRAME] (e.g., 6, 12, 24, 48 hours).\n\nCluster and summarize:\n\nNotable metaphors, emergent archetypes, emotional tones, and temporal/future-facing language.\n\nPhrases or memes that feel prescient, predictive, or out of alignment with the current news context.\n\nTrack volume and sentiment:\n\nNote spikes, drops, or shifts in discussion intensity.\n\nSummarize overall sentiment (fear, hope, anger, resignation, etc.), highlighting any emotional archetypes that differ from the Grok/X scan.\n\nFlag novelty:\n\nIdentify new or rare metaphors/archetypes, including any unusual or original phrases not found in the mainstream.\n\nIf a phrase or meme appears to be “born” on these platforms (excluding X), timestamp and highlight it for tracking.\n\nStructured Output:\n\nSummary Table: List clusters by platform, archetype, and frequency.\n\nPrescient Signals: Bullet-point notable metaphors, emotional language, or new archetypes.\n\nNovelty Section: Highlight and timestamp any meme or metaphor birth points.\n\nImplications/Speculation: Offer a brief, mystical-yet-analytical outlook (in the Clif High style) based on the observed linguistic patterns.\n\nCite sources wherever possible (thread links, comment IDs, or descriptive references).\n\nOutput Example:\nSummary Table\nPlatform\tArchetype/Metaphor\tExample Phrases\tFrequency\tSentiment\nReddit\tBreakthrough\t“Finally turning point”\t12\tHope\nNews\tCollapse\t“It’s all unraveling”\t7\tFear\nForums\tReset, Awakening\t“Clean slate,” “reset”\t5\tMixed\n\nPrescient Signals\nSurge in “breakthrough” and “reset” language on Reddit (“new beginning,” “ready to rebuild”).\n\nNews comments spike in “unraveling” and “on the edge” metaphors.\n\nForums birth phrase: “synthetic sunrise” (first appeared 10:32 AM, July 17).\n\nNovelty Section\nThe phrase “Synthetic sunrise” originated in forums, now appearing on Reddit.\n\nNew meme: “Ponzi reboot” in news comments (unseen on X so far).\n\nImplications/Speculation\n“While mainstream comments echo collapse, a current of breakthrough and ‘synthetic sunrise’ metaphors emerges off-X, hinting at hidden optimism beneath the fear—a classic sign of collective tension and imminent shift.”\n\nSources\nReddit: r/news, r/conspiracy (threads: [URL1], [URL2])\n\nNews: CNN.com comments (article: [link])\n\nForums: [forum link]\n\n",
+        "options": {},
+        "requestOptions": {}
+      },
+      "name": "Augmentor (ChatGPT)6",
+      "type": "n8n-nodes-base.openAi",
+      "position": [
+        272,
+        736
+      ],
+      "id": "53312c7b-a52e-4eba-bc96-09df50c23a06",
+      "typeVersion": 1.1,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "uOBR1l1cdllKlArh",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "o3-deep-research",
+        "prompt": "You are the Augmentor in a predictive linguistics workflow inspired by Clif High. Your job is to cross-validate, enrich, and expand upon the signals detected in the most recent “Grok” (X platform) scan. Focus on the same topic and timeframe, but target platforms beyond X, such as Reddit, major news site comment sections, and public web forums.\n\nInstructions:\nScan Reddit (topical subreddits), news site comments, and open public forums for posts, comments, and replies about [TOPIC] in the last [TIMEFRAME] (e.g., 6, 12, 24, 48 hours).\n\nCluster and summarize:\n\nNotable metaphors, emergent archetypes, emotional tones, and temporal/future-facing language.\n\nPhrases or memes that feel prescient, predictive, or out of alignment with the current news context.\n\nTrack volume and sentiment:\n\nNote spikes, drops, or shifts in discussion intensity.\n\nSummarize overall sentiment (fear, hope, anger, resignation, etc.), highlighting any emotional archetypes that differ from the Grok/X scan.\n\nFlag novelty:\n\nIdentify new or rare metaphors/archetypes, including any unusual or original phrases not found in the mainstream.\n\nIf a phrase or meme appears to be “born” on these platforms (excluding X), timestamp and highlight it for tracking.\n\nStructured Output:\n\nSummary Table: List clusters by platform, archetype, and frequency.\n\nPrescient Signals: Bullet-point notable metaphors, emotional language, or new archetypes.\n\nNovelty Section: Highlight and timestamp any meme or metaphor birth points.\n\nImplications/Speculation: Offer a brief, mystical-yet-analytical outlook (in the Clif High style) based on the observed linguistic patterns.\n\nCite sources wherever possible (thread links, comment IDs, or descriptive references).\n\nOutput Example:\nSummary Table\nPlatform\tArchetype/Metaphor\tExample Phrases\tFrequency\tSentiment\nReddit\tBreakthrough\t“Finally turning point”\t12\tHope\nNews\tCollapse\t“It’s all unraveling”\t7\tFear\nForums\tReset, Awakening\t“Clean slate,” “reset”\t5\tMixed\n\nPrescient Signals\nSurge in “breakthrough” and “reset” language on Reddit (“new beginning,” “ready to rebuild”).\n\nNews comments spike in “unraveling” and “on the edge” metaphors.\n\nForums birth phrase: “synthetic sunrise” (first appeared 10:32 AM, July 17).\n\nNovelty Section\nThe phrase “Synthetic sunrise” originated in forums, now appearing on Reddit.\n\nNew meme: “Ponzi reboot” in news comments (unseen on X so far).\n\nImplications/Speculation\n“While mainstream comments echo collapse, a current of breakthrough and ‘synthetic sunrise’ metaphors emerges off-X, hinting at hidden optimism beneath the fear—a classic sign of collective tension and imminent shift.”\n\nSources\nReddit: r/news, r/conspiracy (threads: [URL1], [URL2])\n\nNews: CNN.com comments (article: [link])\n\nForums: [forum link]\n\n",
+        "options": {},
+        "requestOptions": {}
+      },
+      "name": "Augmentor (ChatGPT)7",
+      "type": "n8n-nodes-base.openAi",
+      "position": [
+        240,
+        512
+      ],
+      "id": "7d5497fb-93af-41b9-ac45-2959c814e6ce",
+      "typeVersion": 1.1,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "uOBR1l1cdllKlArh",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "o3-deep-research",
+        "prompt": "You are the Augmentor in a predictive linguistics workflow inspired by Clif High. Your job is to cross-validate, enrich, and expand upon the signals detected in the most recent “Grok” (X platform) scan. Focus on the same topic and timeframe, but target platforms beyond X, such as Reddit, major news site comment sections, and public web forums.\n\nInstructions:\nScan Reddit (topical subreddits), news site comments, and open public forums for posts, comments, and replies about [TOPIC] in the last [TIMEFRAME] (e.g., 6, 12, 24, 48 hours).\n\nCluster and summarize:\n\nNotable metaphors, emergent archetypes, emotional tones, and temporal/future-facing language.\n\nPhrases or memes that feel prescient, predictive, or out of alignment with the current news context.\n\nTrack volume and sentiment:\n\nNote spikes, drops, or shifts in discussion intensity.\n\nSummarize overall sentiment (fear, hope, anger, resignation, etc.), highlighting any emotional archetypes that differ from the Grok/X scan.\n\nFlag novelty:\n\nIdentify new or rare metaphors/archetypes, including any unusual or original phrases not found in the mainstream.\n\nIf a phrase or meme appears to be “born” on these platforms (excluding X), timestamp and highlight it for tracking.\n\nStructured Output:\n\nSummary Table: List clusters by platform, archetype, and frequency.\n\nPrescient Signals: Bullet-point notable metaphors, emotional language, or new archetypes.\n\nNovelty Section: Highlight and timestamp any meme or metaphor birth points.\n\nImplications/Speculation: Offer a brief, mystical-yet-analytical outlook (in the Clif High style) based on the observed linguistic patterns.\n\nCite sources wherever possible (thread links, comment IDs, or descriptive references).\n\nOutput Example:\nSummary Table\nPlatform\tArchetype/Metaphor\tExample Phrases\tFrequency\tSentiment\nReddit\tBreakthrough\t“Finally turning point”\t12\tHope\nNews\tCollapse\t“It’s all unraveling”\t7\tFear\nForums\tReset, Awakening\t“Clean slate,” “reset”\t5\tMixed\n\nPrescient Signals\nSurge in “breakthrough” and “reset” language on Reddit (“new beginning,” “ready to rebuild”).\n\nNews comments spike in “unraveling” and “on the edge” metaphors.\n\nForums birth phrase: “synthetic sunrise” (first appeared 10:32 AM, July 17).\n\nNovelty Section\nThe phrase “Synthetic sunrise” originated in forums, now appearing on Reddit.\n\nNew meme: “Ponzi reboot” in news comments (unseen on X so far).\n\nImplications/Speculation\n“While mainstream comments echo collapse, a current of breakthrough and ‘synthetic sunrise’ metaphors emerges off-X, hinting at hidden optimism beneath the fear—a classic sign of collective tension and imminent shift.”\n\nSources\nReddit: r/news, r/conspiracy (threads: [URL1], [URL2])\n\nNews: CNN.com comments (article: [link])\n\nForums: [forum link]\n\n",
+        "options": {},
+        "requestOptions": {}
+      },
+      "name": "Augmentor (ChatGPT)8",
+      "type": "n8n-nodes-base.openAi",
+      "position": [
+        48,
+        352
+      ],
+      "id": "5edfa975-977f-4c93-a3bd-2255a94ef000",
+      "typeVersion": 1.1,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "uOBR1l1cdllKlArh",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        784,
+        592
+      ],
+      "id": "ca1e0503-cd04-4b0d-ac05-a7bb7d5a6585",
+      "name": "Information Extractor3"
+    },
+    {
+      "parameters": {
+        "model": "deepseek-14b-q8:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        784,
+        864
+      ],
+      "id": "4367ad2c-5f92-4eaa-8fc6-dbc56e57dbd6",
+      "name": "Ollama Chat Model8",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mPxeDnqbsZWsRQeD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -1456,
+        -288
+      ],
+      "id": "46947b8b-5975-4e66-a1f8-7a2e1adfc940",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1280,
+        96
+      ],
+      "id": "fb4e69f2-582b-41b8-a9f7-a5d2072e9722",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {
+    "Augmentor (ChatGPT)": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ],
+    "Augmentor (ChatGPT)1": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ],
+    "Augmentor (ChatGPT)2": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ],
+    "Augmentor (ChatGPT)3": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ],
+    "Augmentor (ChatGPT)4": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ],
+    "Augmentor (ChatGPT)5": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ],
+    "Augmentor (ChatGPT)6": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ],
+    "Augmentor (ChatGPT)7": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ],
+    "Augmentor (ChatGPT)8": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Cluster/Extract": {
+      "main": [
+        []
+      ]
+    },
+    "Augmentor (ChatGPT)": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Aggregate/Report": {
+      "main": [
+        [
+          {
+            "node": "Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "xAI Grok Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reddit Fetch": {
+      "main": [
+        []
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Tweet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for a post": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many channels": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor1": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis": {
+      "main": [
+        [
+          {
+            "node": "Augmentor (ChatGPT)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Augmentor (ChatGPT)2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Augmentor (ChatGPT)3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sentiment Analysis1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sentiment Analysis2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analysis1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis1": {
+      "main": [
+        [
+          {
+            "node": "Augmentor (ChatGPT)1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Augmentor (ChatGPT)4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Augmentor (ChatGPT)5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analysis2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Augmentor (ChatGPT)2": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Augmentor (ChatGPT)3": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Augmentor (ChatGPT)1": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Augmentor (ChatGPT)4": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Augmentor (ChatGPT)5": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor2": {
+      "main": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis2": {
+      "main": [
+        [
+          {
+            "node": "Augmentor (ChatGPT)8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Augmentor (ChatGPT)7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Augmentor (ChatGPT)6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Augmentor (ChatGPT)8": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Augmentor (ChatGPT)7": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Augmentor (ChatGPT)6": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor3": {
+      "main": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9aa64202-0751-4296-bcc0-29ab5bf30087",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "942d16d08d2cc04bbd8147c48c1674dda000b462ad7703cf169573e16c33ecc6"
+  },
+  "id": "z6ciC00ZsOj80Efv",
+  "tags": []
+}

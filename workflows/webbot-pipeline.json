@@ -1,0 +1,193 @@
+{
+    "nodes": [
+        {
+            "name": "Trigger",
+            "type": "n8n-nodes-base.manualTrigger",
+            "position": [
+                100,
+                300
+            ]
+        },
+        {
+            "name": "X (Twitter) Search",
+            "type": "custom.grokApiNode",
+            "parameters": {
+                "query": "from:nytimes OR from:cnn OR ... filter:news since:{{ $now.minus('2d').toISO() }} min_replies:1",
+                "limit": 50
+            },
+            "credentials": {
+                "GrokApi": "your-grok-api-credentials"
+            },
+            "position": [
+                300,
+                250
+            ]
+        },
+        {
+            "name": "Cluster/Extract",
+            "type": "n8n-nodes-base.function",
+            "parameters": {
+                "functionCode": "// cluster by theme, extract metaphors, output JSON"
+            },
+            "position": [
+                500,
+                250
+            ]
+        },
+        {
+            "name": "Reddit Fetch",
+            "type": "n8n-nodes-base.httpRequest",
+            "parameters": {
+                "url": "https://www.reddit.com/r/all/top.json?limit=20",
+                "options": {
+                    "qs": {
+                        "t": "day"
+                    }
+                }
+            },
+            "position": [
+                300,
+                400
+            ]
+        },
+        {
+    "name": "YouTube Comments Fetch",
+    "type": "n8n-nodes-base.httpRequest",
+    "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/commentThreads",
+        "method": "GET",
+        "queryParameters": {
+            "part": "snippet",
+            "videoId": "<YOUR_VIDEO_ID>",
+            "key": "<YOUR_API_KEY>",
+            "maxResults": "20"
+        },
+        "responseFormat": "json",
+        "timeout": 15000
+    },
+    "position": [300, 500]
+},
+
+    {
+        "name": "Augmentor (ChatGPT)",
+        "type": "n8n-nodes-base.openAi",
+        "parameters": {
+            "model": "gpt-4o",
+            "prompt": "Paste the full Augmentor prompt here, using inputs from Cluster/Extract and Reddit/YouTube nodes",
+            "temperature": 0.7,
+            "maxTokens": 1024,
+            "stop": ["\n\n", "###"],
+            "jsonOutput": true
+        },
+        "credentials": {
+            "OpenAI API": "your-openai-api-key"
+        },
+        "position": [
+            600,
+            400
+        ]
+    },
+        {
+            "name": "Aggregate/Report",
+            "type": "n8n-nodes-base.function",
+            "parameters": {
+                "functionCode": "// merge Grok and Augmentor outputs, create Markdown/JSON summary"
+            },
+            "position": [
+                800,
+                400
+            ]
+        },
+        {
+            "name": "Output",
+            "type": "n8n-nodes-base.set",
+            "parameters": {
+                "value": "={{ $json.report }}",
+                "dataPropertyName": "webbot_report"
+            },
+            "position": [
+                1000,
+                400
+            ]
+        }
+    ],
+    "connections": {
+        "Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "X (Twitter) Search",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "X (Twitter) Search": {
+            "main": [
+                [
+                    {
+                        "node": "Cluster/Extract",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Cluster/Extract": {
+            "main": [
+                [
+                    {
+                        "node": "Augmentor (ChatGPT)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Reddit Fetch": {
+            "main": [
+                [
+                    {
+                        "node": "Augmentor (ChatGPT)",
+                        "type": "main",
+                        "index": 1
+                    }
+                ]
+            ]
+        },
+        "YouTube Comments Fetch": {
+            "main": [
+                [
+                    {
+                        "node": "Augmentor (ChatGPT)",
+                        "type": "main",
+                        "index": 2
+                    }
+                ]
+            ]
+        },
+        "Augmentor (ChatGPT)": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregate/Report",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Aggregate/Report": {
+            "main": [
+                [
+                    {
+                        "node": "Output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}
